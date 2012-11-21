@@ -1,0 +1,63 @@
+body {
+	color: #fff;
+}
+.classy {
+	border: 2px solid #1A6E9E;
+	width: 660px;
+	margin: 50px 0 0 50px;
+	padding: 10px;
+	background-image: linear-gradient(         bottom, #1A6E9E 0%, #2BA4C2 100%);
+	background-image: -o-linear-gradient(      bottom, #1A6E9E 0%, #2BA4C2 100%);
+	background-image: -moz-linear-gradient(    bottom, #1A6E9E 0%, #2BA4C2 100%);
+	background-image: -webkit-linear-gradient( bottom, #1A6E9E 0%, #2BA4C2 100%);
+	background-image: -ms-linear-gradient(     bottom, #1A6E9E 0%, #2BA4C2 100%);
+	background-image: -webkit-gradient(
+		linear,
+		left bottom,
+		left top,
+		color-stop(0, #1A6E9E),
+		color-stop(1, #2BA4C2)
+	);
+	-moz-border-radius: 7px;
+	-webkit-border-radius: 7px;
+	border-radius: 7px;
+}
+#valLabel, #descLabel, #refLabel {
+	margin-right: 10px;
+}
+#descLabel {
+	margin-left: 10px;
+}
+.right {
+	margin: 3px 0px 7px 10px;
+	float: right;
+}
+.selectListContainer {
+	margin: 3px 0px 7px 0px;
+}
+.close {
+	margin: 3px 0px 3px 0px;
+}
+.submission {
+	text-align: center;
+	margin: 10px 0px 0px 0px;
+}
+#proxyDesc {
+	width: 200px;
+}
+#proxyVal {
+	width: 150px;
+}
+#ipMessage {
+	color: #fcbd14;
+	font-size: 80%
+}
+input, option, optgroup, select, a:visited {
+	color: #000088;
+}
+active {
+	color: #000088;
+}
+notyet {
+	color: #666666;
+}

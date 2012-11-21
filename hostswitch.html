@@ -1,0 +1,32 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+	<head>
+		<title>host switch</title>
+		<link rel="stylesheet" type="text/css" href="hostswitch.css" />
+	</head>
+	<body>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+		<script src="jquery.cookie.js"></script>
+		<script src="hostswitch.js" type="text/javascript"></script>
+		<div class="classy">
+			<p class="close">Current Manta IP (proxy): <span class="currentProxy"></span></p>
+			<p class="refLinkContainer" style="display:none"><span id="refLabel">You arrived from:</span><a class="refLink" href=""></a></p>
+			<p class="right" style="display:none"><span id="usefulLinks">Other useful links:</span></p>
+			<form action="javascript:" name="proxyForm" id="proxyForm">
+				<fieldset>
+					<legend>Select a server from the list, or enter one manually.</legend>
+					<span class="selectListContainer"></span> <!-- will be populated in the js -->
+					                                                                                                 <!-- 10.28.16. 216.12.148.  -->
+					<input type="submit" name="submit" id="clearMySites" class="notyet" value="Remove added hosts">
+					<p style="clear: both"> </p>
+					<span id="valLabel"> Use New Manta IP: <input id="proxyVal"  type="text" name="customProxyVal"  value="192.168.241." /></span>
+					<span id="descLabel">Description:      <input id="proxyDesc" type="text" name="customProxyDesc" value="-sbx" /></span>
+					<span id="ipMessage">focus/blur's on the IP field will cycle through common subnets</span>
+				</fieldset>
+				<p class="submission">
+					<input type="submit" name="submit" id="submitProxy"  class="active" value="Set Proxy IP from Textfield">
+				</p>
+			</form>
+		</div>
+	</body>
+</html>

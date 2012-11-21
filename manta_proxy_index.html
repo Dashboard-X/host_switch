@@ -1,0 +1,91 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+<head><title>host switch</title></head>
+<body>
+<p>Current Manta IP (proxy): <span class="currentProxy"></span></p>
+<p class="refLinkContainer" style="display:none">You arrived from: <a class="refLink" href=""></a></p>
+<p>Select a server from the list, or enter one manually.</p>
+<form action="javascript:" name="proxyForm" id="proxyForm">
+	<input type="hidden" name="proxyVal">
+	<p class="selectListContainer"></p>
+	<p>Use New Manta IP: <input type="text" name="customProxyVal"> Description: <input type="text" name="customProxyDesc"></p>
+	<p><input type="submit" name="submit" id="submitProxy" value="Set IP"></p>
+</form>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<script src="/hostproxy/jquery.cookie.js"></script>
+<script>
+
+$(document).ready(function() {
+	var urlParam = function(name) {
+		var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(window.location.href);
+		return results ? results[1] : 0;
+	};
+
+	var mySites = [];
+	if (! window.localStorage) {
+		window.localStorage = {};
+	}
+	if (localStorage.mySites) {
+		mySites = JSON.parse(localStorage.mySites);
+	}
+	var sites = [
+		{ ip: "216.12.148.77", description: "production" },
+		{ ip: "10.28.16.166", description: "ecnext15 (qa)" },
+ 		{ ip: "10.28.16.211", description: "ecnext30 (qa)" },
+		{ ip: "10.28.16.197", description: "ecnext37 (dataqa)" },
+ 		{ ip: "10.28.16.201", description: "ecnext33 (comsite dev)" },
+		{ ip: "192.168.240.167", description: "Ginger's Sandbox" }
+
+		//{ ip: "", description: "" },
+	];
+	if (mySites.length) sites = sites.concat(mySites);
+
+	var ref = urlParam("ref");
+	if (ref) {
+		$(".refLink").attr("href", ref);
+		$(".refLink").text(ref);
+		$(".refLinkContainer").show();
+	}
+	
+	var selectList = $('<select name="selectProxy" class="selectProxy"></select>');
+	selectList.append($('<option value="">select a server...</option>'));
+	$.each(sites, function() {
+		selectList.append($('<option value="' + this.ip + '">' + this.description + ' (' + this.ip + ')</option>'));
+	});
+	$(".selectListContainer").append(selectList);
+	$(".currentProxy").text($.cookie('mantaproxy'));
+	$('#proxyForm input[name=proxyVal]').val($.cookie('mantaproxy'));
+	
+	$(".selectProxy").change(function() {
+		$("#proxyForm input[name=proxyVal]").val($(".selectProxy").val());
+	});
+	$("#proxyForm").submit(function() {
+		var newProxy =  $(".selectProxy").val();
+		var customProxy = $('#proxyForm input[name=customProxyVal]').val();
+		if (customProxy) {
+			newProxy = customProxy;
+			if (window.localStorage && window.JSON) {
+				var newEntry = true;
+				$.each(sites, function () {
+					if (customProxy === this.ip) { newEntry = false; return false; }
+				});
+				if (newEntry) {
+					var entry = {
+						ip: customProxy,
+						description: $('#proxyForm input[name=customProxyDesc]').val() || customProxy
+					};
+					entry.description = entry.description + "<super>*</super>";
+					mySites.push(entry);
+					localStorage.mySites = JSON.stringify(mySites);
+				}
+			}
+		}
+		$.cookie('mantaproxy', newProxy, { path: "/", domain: "manta.com" });
+		$(".currentProxy").text($.cookie('mantaproxy'));
+
+		return false;
+	});
+});
+</script>
+</body>
+</html>

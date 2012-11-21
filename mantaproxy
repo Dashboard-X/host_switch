@@ -1,0 +1,88 @@
+# You may add here your
+# server {
+#	...
+# }
+# statements for each of your virtual hosts
+
+server {
+	listen 443;
+	server_name *.manta.com;
+
+	ssl  on;
+	ssl_certificate  www_manta_com.crt;
+	ssl_certificate_key  www_manta_com.key;
+
+	location / {
+		if ($cookie_mantaproxy ~ '^$') {
+			rewrite ^(.*)$ http://www.manta.com/hostproxy/?ref=https://www.manta.com$1 redirect;
+			rewrite ^.*$ http://www.manta.com/hostproxy/ redirect;
+			break;
+		}
+
+		set $port "443";
+		set $ip $cookie_mantaproxy;
+		if ($cookie_mantaproxy ~* '(.*)%3A(.*)%3A(.*)') {
+			set $ip $1;
+			set $port $3;
+		}
+
+		proxy_set_header	X-Forwarded-For $proxy_add_x_forwarded_for;
+		proxy_pass https://$ip:$port$request_uri;
+		proxy_set_header Host $host;
+		proxy_buffer_size 16K;
+		proxy_buffers 8 16K;
+	}
+}
+
+server {
+	listen   80;
+	server_name  *.manta.com;
+
+	access_log  /var/log/nginx/localhost.access.log;
+	#error_log   /var/log/nginx/error.log notice;
+	#rewrite_log on;
+
+	location / {
+		if ($cookie_mantaproxy ~ '^$') {
+			rewrite ^(.*)$ http://www.manta.com/hostproxy/?ref=http://www.manta.com$1 redirect;
+			rewrite ^.*$ http://www.manta.com/hostproxy/ redirect;
+			break;
+		}
+
+		set $port "80";
+		set $ip $cookie_mantaproxy;
+		if ($cookie_mantaproxy ~* '(.*)%3A(.*)') {
+			set $ip $1;
+			set $port $2;
+		}
+		if ($cookie_mantaproxy ~* '(.*)%3A(.*)%3A(.*)') {
+			set $ip $1;
+			set $port $2;
+		}
+
+		proxy_set_header	X-Forwarded-For $proxy_add_x_forwarded_for;
+		proxy_pass http://$ip:$port$request_uri;
+		proxy_set_header Host $host;
+		proxy_buffer_size 16K;
+		proxy_buffers 8 16K;
+	}
+
+	# files to be served directly go in here
+	location /hostproxy {
+		root   /var/www/mantaproxy;
+		index  index.html index.htm;
+	}
+
+	location /flector {
+		if ($request_uri ~* '^/flector/(.*?)/(.*?)/(.*)') {
+			set $h $1;
+			set $port $2;
+			set $dest $3;
+		}
+		proxy_pass http://$h:$port/$dest;
+		proxy_buffer_size 16K;
+		proxy_buffers 8 16K;
+	}
+
+}
+
